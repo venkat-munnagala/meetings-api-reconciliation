@@ -113,7 +113,7 @@ Same day is required at every level. **Contained** means every person the CRM na
 
 Level 1 runs first, per CRM record, and claims the closest candidate one-to-one. A record claimed at level 1 generates no proposals. Levels 2–4 then run over every unclaimed same-day pair; proposals never claim, so a record can appear in several.
 
-Result: **14 auto-merged, 7 proposed, 7 singleton = 28 meetings from 42 records**, with 4 open proposals. Every match carries its evidence and a Senzing-style match key such as `+DAY+START-OWNER~CLIENT+TITLE` (`+` agreed, `-` disagreed, `~` not testable).
+Result: **14 auto-merged, 7 proposed, 7 singleton = 28 meetings from 42 records**, with 4 open proposals. Every match carries its evidence and a compact match key such as `+DAY+START-OWNER~CLIENT+TITLE` (`+` agreed, `-` disagreed, `~` not testable), so the reason for any merge can be read at a glance.
 
 ### Winner rules
 
@@ -166,9 +166,9 @@ Example, the `start` field of the CRM-1004 / CAL-A4 proposal preview:
 
 ## Key decisions
 
-**A rule cascade, not a probabilistic score.** With 42 records there is nothing to train weights on, and the enterprise tools I looked at (Senzing, AWS Entity Resolution, Google's entity reconciliation) say the same thing from the other direction: a single confidence number is too coarse to decide what a human should review. Named levels with explicit evidence are both more honest and easier to test.
+**A rule cascade, not a probabilistic score.** With 42 records there is nothing to train weights on, and a single confidence number hides the question that matters: *which* evidence agreed and which did not. A score of 0.7 does not tell a reviewer whether the time or the people were off. Named levels with explicit evidence answer that directly, are predictable by hand, and are easy to test.
 
-**±10 minutes.** Every timestamp in both files sits on a :00/:30 grid with zero seconds, so a tight window loses nothing. The two real gaps in the data are 60 and 120 minutes, and the right answer for both is "ask", not "merge". Published vendor windows range from exact (Salesforce) to ±15 minutes (Gong via Gainsight); 10 sits inside that.
+**±10 minutes.** Every timestamp in both files sits on a :00/:30 grid with zero seconds, so a tight window loses nothing. The two real gaps in the data are 60 and 120 minutes, and the right answer for both is "ask", not "merge". A window wide enough to swallow them would also swallow a genuine back-to-back meeting with the same people, which is exactly the case the design refuses to assume away.
 
 **The UTC stamp is taken at face value.** It would be trivial to trim the `Z` and call it a label error, and the result would match the CRM. But a rule that rewrites data to make it fit is exactly the kind of rule that backfires on the next file. The service converts it correctly, lands 60 minutes off, and raises a proposal whose reason names the whole-hour gap as a likely timezone error. A person decides.
 
@@ -182,7 +182,7 @@ Example, the `start` field of the CRM-1004 / CAL-A4 proposal preview:
 
 ## Not built, and where it would go
 
-- **Decisions ledger.** `POST /api/proposals/{id}/confirm|reject` writing `{proposal_id, decision, decided_at, compared_fields_hash}` to a small JSON file, replayed after each sync. A decision is re-surfaced only when the hash of the compared fields changes, which avoids the "stale lock" failure MDM tools document where a permanent rejection hides a later real change.
+- **Decisions ledger.** `POST /api/proposals/{id}/confirm|reject` writing `{proposal_id, decision, decided_at, compared_fields_hash}` to a small JSON file, replayed after each sync. A decision is re-surfaced only when the hash of the compared fields changes, so a rejection made on yesterday's values cannot silently hide a real change in today's.
 - **Persistence.** `Store` is one dataclass behind `build_store()`; SQLite or Postgres would implement the same reads.
 - **Scheduling.** `POST /api/sync` is the hook for cron or a webhook.
 - **Live adapters.** `SourceAdapter` is a one-method protocol (`fetch() -> list[RawRecord]`). The two file adapters are 4 lines each.
@@ -216,7 +216,7 @@ src/eventsync/
 web/                   index.html, app.js, styles.css (no build step)
 tests/                 74 tests; the real data files are the fixtures
 data/                  the two inputs
-notebooks/             EDA notebook, research notes and report
+notebooks/             EDA notebook
 docs/                  design spec, implementation plan, AI collaboration index
 tasks/                 todo and lessons
 ```
@@ -229,11 +229,11 @@ Roughly 8 hours wall-clock across one day, including time where AI agents were r
 |---|---|
 | Reading the brief, exploratory data analysis notebook | 1.5 |
 | Architecture and matching-rule design (several rounds of discussion and correction) | 2 |
-| Background research on how enterprise reconciliation tools do this | 1.5 |
+| Stress-testing the matching rules against failure cases | 1.5 |
 | Design spec, reviewer pass, implementation plan | 1 |
 | Build (TDD, 11 tasks) and browser check | 1.5 |
 | README and documentation | 0.5 |
 
 ## AI collaboration
 
-This project was built with Claude Code as a pair, with Antigravity used for browser-driven research. The brainstorming, the EDA, the research report, the design spec, the plan, the correction log and the task ledger are all included; see [`docs/ai-collaboration/README.md`](docs/ai-collaboration/README.md) for the index and a short account of how the design changed along the way.
+This project was built with Claude Code as a pair. The brainstorming, the EDA, the design spec, the plan, the correction log and the task ledger are all included; see [`docs/ai-collaboration/README.md`](docs/ai-collaboration/README.md) for the index and a short account of how the design changed along the way.
