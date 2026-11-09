@@ -236,4 +236,4 @@ Roughly 8 hours wall-clock across one day, including time where AI agents were r
 
 ## AI collaboration
 
-This project was built with Claude Code as a pair. The brainstorming, the EDA, the design spec, the plan, the correction log and the task ledger are all included; see [`docs/ai-collaboration/README.md`](docs/ai-collaboration/README.md) for the index and a short account of how the design changed along the way.
+This project was built with Claude Code as a pair. The brainstorming, the EDA, the design spec, the plan, the correction log and the task ledger are all included; see [`docs/ai-collaboration/README.md`](docs/ai-collaboration/README.md) for the design process: what was decided, the reasoning behind each decision, the alternatives that were rejected and why, and where scope was met minimally on purpose.

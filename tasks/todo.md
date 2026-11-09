@@ -26,3 +26,13 @@
 - Pipeline: 42 records → 28 meetings (14 auto, 7 proposed, 7 singleton), 4 proposals (2 level-2, 1 level-3, 1 duplicate), 3 conflicts + 2 unresolved fields, 19 quality flags.
 - Browser check done on Meetings, Proposals, Unmatched views.
 - Final whole-branch review by a fresh agent: see .superpowers ledger / final message.
+
+## Deferred minors from the final code review (left on purpose)
+- `_best_rejected` ranks level 4 above level 1 when several candidates reach a level; invisible on this data.
+- Unknown `/api/*` paths return the framework's default 404 body rather than the documented error shape.
+- `cascade.py` imports a private helper from `participants.py`; could be made public.
+- Empty-string `subject` and `client_company` are not flagged `empty_string` (notes and location are).
+- The CRM company key is shown beside real calendar domains in the `external_domains` field view; could be relabelled.
+- Web filters do not expose `from`/`to`; the level filter offers only 1; `api()` parses JSON before checking `r.ok`.
+- `list_proposals` has no upper bound on `limit`.
+- `REPO_ROOT` assumes the `src/` layout used by `uv run`.
