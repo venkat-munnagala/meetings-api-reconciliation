@@ -8,7 +8,7 @@
 - [x] Implementation plan (docs/superpowers/plans/2026-11-09-event-sync-service.md)
 
 ## Build
-- [ ] Project scaffold, config, single command `uv run eventsync`
+- [x] Project scaffold, config, single command `uv run eventsync`
 - [ ] Adapters + normalisation + quality flags
 - [ ] Participant resolver
 - [ ] Dedupe + cascade + merge (FieldViews)
