@@ -12,7 +12,7 @@
 - [x] Adapters + normalisation + quality flags
 - [x] Participant resolver
 - [x] Dedupe + cascade + merge (FieldViews)
-- [ ] Store + API routers
+- [~] Store done; API routers in progress
 - [ ] Static frontend (meetings, detail, proposals, quality, unmatched)
 - [ ] Tests pinned to EDA trap table
 - [ ] README (run, approach, traps, decisions, not-built, time)
