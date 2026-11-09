@@ -71,3 +71,11 @@ def test_sync_is_idempotent(settings):
 def test_missing_file_raises(settings):
     with pytest.raises(FileNotFoundError):
         build_store(replace(settings, data_dir=Path("/nonexistent")))
+
+
+def test_rejected_best_notes_when_candidate_already_merged(store):
+    best = store.rejected_best[("calendar", "CAL-A19")]
+    assert best["other_id"] == "CRM-1017" and best["other_merged_with"] == "CAL-A20"
+    assert any("already merged" in r for r in best["reasons"])
+    assert store.rejected_best[("crm", "CRM-1003")]["other_merged_with"] == "CRM-1006"
+    assert store.rejected_best[("crm", "CRM-1004")]["other_merged_with"] is None

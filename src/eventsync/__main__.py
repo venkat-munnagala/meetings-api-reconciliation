@@ -1,10 +1,15 @@
+import os
+
 import uvicorn
 
 from eventsync.config import DEFAULT
 
 
 def main() -> None:
-    uvicorn.run("eventsync.api.app:app", host=DEFAULT.host, port=DEFAULT.port)
+    """Start the API. PORT / HOST environment variables override the defaults."""
+    host = os.environ.get("HOST", DEFAULT.host)
+    port = int(os.environ.get("PORT", DEFAULT.port))
+    uvicorn.run("eventsync.api.app:app", host=host, port=port)
 
 
 if __name__ == "__main__":

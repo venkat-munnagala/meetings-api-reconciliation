@@ -60,7 +60,9 @@ def _key(r: CanonicalRecord) -> Key:
     return (r.source, r.source_id)
 
 
-def _best_rejected(rec: CanonicalRecord, others: list[CanonicalRecord], s: Settings) -> dict[str, Any] | None:
+def _best_rejected(
+    rec: CanonicalRecord, others: list[CanonicalRecord], s: Settings, merged_partner: dict[Key, str | None]
+) -> dict[str, Any] | None:
     """For an unmatched record: the same-day candidate from the other source that got furthest."""
     cands = [o for o in others if o.source != rec.source and o.day is not None and o.day == rec.day]
     if not cands:
@@ -78,7 +80,11 @@ def _best_rejected(rec: CanonicalRecord, others: list[CanonicalRecord], s: Setti
     reasons = reasons_for(ev, lvl or 0, s)
     if not ev.participants_contained and not ev.participants_partial:
         reasons.append("CRM owner is not on the invite")
-    return {"other_id": best.source_id, "level_reached": lvl, "reasons": reasons, "evidence": ev.model_dump()}
+    partner = merged_partner.get(_key(best))
+    if partner:
+        reasons.append(f"{best.source_id} is already merged with {partner}")
+    return {"other_id": best.source_id, "other_merged_with": partner, "level_reached": lvl,
+            "reasons": reasons, "evidence": ev.model_dump()}
 
 
 def build_store(s: Settings) -> Store:
@@ -145,9 +151,13 @@ def build_store(s: Settings) -> Store:
         if m.match.kind == MatchKind.singleton and m.proposals:
             m.match.kind = MatchKind.proposed
 
-    # best rejected candidate for every unmatched record
+    # best rejected candidate for every unmatched record (noting when that candidate is already merged)
+    merged_partner: dict[Key, str | None] = {}
+    for c, k, _ in cascade.auto:
+        merged_partner[_key(c)] = k.source_id
+        merged_partner[_key(k)] = c.source_id
     for r in cascade.unmatched:
-        store.rejected_best[_key(r)] = _best_rejected(r, records, s)
+        store.rejected_best[_key(r)] = _best_rejected(r, records, s, merged_partner)
 
     store.synced_at = datetime.now(timezone.utc)
     return store

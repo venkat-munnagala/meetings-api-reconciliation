@@ -1,1 +1,85 @@
-<html><body>placeholder</body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Event Sync</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Event Sync <span class="muted">CRM × Calendar reconciliation</span></h1>
+    <div id="stats" class="stats"></div>
+    <button id="sync" class="btn">Re-sync</button>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button id="tab-meetings" class="tab active" data-view="meetings">Meetings</button>
+    <button id="tab-proposals" class="tab" data-view="proposals">Proposals</button>
+    <button id="tab-quality" class="tab" data-view="quality">Quality</button>
+    <button id="tab-unmatched" class="tab" data-view="unmatched">Unmatched</button>
+  </nav>
+
+  <section id="view-meetings" class="view">
+    <form id="filters" class="filters" onsubmit="return false">
+      <label>Source
+        <select name="source">
+          <option value="">all</option><option value="both">both sources</option>
+          <option value="crm">CRM only</option><option value="calendar">calendar only</option>
+        </select>
+      </label>
+      <label>Conflicts
+        <select name="has_conflict"><option value="">any</option><option value="true">with conflicts</option><option value="false">none</option></select>
+      </label>
+      <label>Level
+        <select name="level"><option value="">any</option><option value="1">1 auto</option></select>
+      </label>
+      <label>Owner <input name="owner" placeholder="email"></label>
+      <label>Status
+        <select name="status">
+          <option value="">any</option><option>scheduled</option><option>confirmed</option>
+          <option>tentative</option><option>completed</option><option>cancelled</option>
+        </select>
+      </label>
+      <button type="button" id="clear" class="btn small">Clear</button>
+    </form>
+    <div class="legend">
+      <span class="chip agree">agree</span><span class="chip differs">differs</span><span class="chip conflict">conflict</span>
+      <span class="chip unresolved">unresolved</span><span class="chip single_source">single source</span><span class="chip missing">missing</span>
+    </div>
+    <div class="split">
+      <table id="meetings" class="grid">
+        <thead><tr><th>Day</th><th>Start</th><th>Title</th><th>Owner</th><th>Client</th><th>Kind</th><th>Status</th><th>Match</th><th>Conf.</th><th>Flags</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <aside id="detail" class="detail"><p class="muted">Select a meeting to see per-field provenance.</p></aside>
+    </div>
+  </section>
+
+  <section id="view-proposals" class="view hidden">
+    <p class="muted">Pairs the cascade would not merge on its own. Read-only here; confirm/reject is a documented next step.</p>
+    <div class="split">
+      <table id="proposals" class="grid">
+        <thead><tr><th>Level</th><th>Kind</th><th>Left</th><th>Right</th><th>Reasons</th></tr></thead><tbody></tbody>
+      </table>
+      <aside id="proposal-detail" class="detail"><p class="muted">Select a proposal.</p></aside>
+    </div>
+  </section>
+
+  <section id="view-quality" class="view hidden">
+    <label>Code <select id="quality-code"><option value="">all</option></select></label>
+    <table id="quality" class="grid">
+      <thead><tr><th>Source</th><th>Record</th><th>Field</th><th>Code</th><th>Detail</th></tr></thead><tbody></tbody>
+    </table>
+  </section>
+
+  <section id="view-unmatched" class="view hidden">
+    <p class="muted">Records with no counterpart, and the closest candidate the cascade rejected.</p>
+    <table id="unmatched" class="grid">
+      <thead><tr><th>Source</th><th>Record</th><th>State</th><th>Best rejected candidate</th><th>Why it was rejected</th></tr></thead><tbody></tbody>
+    </table>
+  </section>
+
+  <script src="/app.js"></script>
+</body>
+</html>

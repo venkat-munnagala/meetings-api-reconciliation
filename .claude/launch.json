@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "eventsync",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "eventsync"],
+      "port": 8000
+    }
+  ]
+}
