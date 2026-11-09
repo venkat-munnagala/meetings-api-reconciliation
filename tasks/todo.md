@@ -11,7 +11,7 @@
 - [x] Project scaffold, config, single command `uv run eventsync`
 - [x] Adapters + normalisation + quality flags
 - [x] Participant resolver
-- [ ] Dedupe + cascade + merge (FieldViews)
+- [~] Dedupe + cascade done; merge (FieldViews) in progress
 - [ ] Store + API routers
 - [ ] Static frontend (meetings, detail, proposals, quality, unmatched)
 - [ ] Tests pinned to EDA trap table

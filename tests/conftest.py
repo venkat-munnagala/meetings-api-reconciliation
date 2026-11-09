@@ -49,3 +49,14 @@ def canon(settings, crm_raw, cal_raw):
 
     recs = normalise_all(list(crm_raw.values()), list(cal_raw.values()), settings)
     return {r.source_id: r for r in recs}
+
+
+@pytest.fixture(scope="session")
+def pair(canon):
+    from eventsync.models import Match
+    from eventsync.reconcile.merge import build_meeting
+
+    def _pair(c_id: str, e_id: str):
+        return build_meeting(canon[c_id], canon[e_id], Match(kind="auto", level=1, confidence="high"))
+
+    return _pair
