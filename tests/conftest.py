@@ -41,3 +41,11 @@ def cal_raw(settings):
     from eventsync.adapters.calendar import CalendarFileAdapter
 
     return {r.source_id: r for r in CalendarFileAdapter(settings.data_dir / "calendar_events.json").fetch()}
+
+
+@pytest.fixture(scope="session")
+def canon(settings, crm_raw, cal_raw):
+    from eventsync.normalize import normalise_all
+
+    recs = normalise_all(list(crm_raw.values()), list(cal_raw.values()), settings)
+    return {r.source_id: r for r in recs}

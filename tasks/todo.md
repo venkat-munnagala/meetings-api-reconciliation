@@ -9,7 +9,7 @@
 
 ## Build
 - [x] Project scaffold, config, single command `uv run eventsync`
-- [ ] Adapters + normalisation + quality flags
+- [x] Adapters + normalisation + quality flags
 - [ ] Participant resolver
 - [ ] Dedupe + cascade + merge (FieldViews)
 - [ ] Store + API routers
