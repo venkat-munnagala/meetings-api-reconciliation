@@ -10,7 +10,7 @@
 ## Build
 - [x] Project scaffold, config, single command `uv run eventsync`
 - [x] Adapters + normalisation + quality flags
-- [ ] Participant resolver
+- [x] Participant resolver
 - [ ] Dedupe + cascade + merge (FieldViews)
 - [ ] Store + API routers
 - [ ] Static frontend (meetings, detail, proposals, quality, unmatched)
