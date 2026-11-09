@@ -13,11 +13,16 @@
 - [x] Participant resolver
 - [x] Dedupe + cascade + merge (FieldViews)
 - [x] Store + API routers
-- [ ] Static frontend (meetings, detail, proposals, quality, unmatched)
-- [ ] Tests pinned to EDA trap table
-- [ ] README (run, approach, traps, decisions, not-built, time)
-- [ ] docs/ai-collaboration index
+- [x] Static frontend (meetings, detail, proposals, quality, unmatched) — manually checked in browser: 28 rows, 1002 unresolved location, 4 proposals, 1003→A7
+- [x] Tests pinned to EDA trap table (74 passing)
+- [x] README (run, approach, traps, decisions, not-built, time)
+- [x] docs/ai-collaboration index
 
 ## Review
-- [ ] Verify every trap row behaves as specified
-- [ ] Time log
+- [x] Verify every trap row behaves as specified (one test per row; 74 passing)
+- [x] Time log (README: ~8h wall-clock, split by phase)
+
+## Review
+- Pipeline: 42 records → 28 meetings (14 auto, 7 proposed, 7 singleton), 4 proposals (2 level-2, 1 level-3, 1 duplicate), 3 conflicts + 2 unresolved fields, 19 quality flags.
+- Browser check done on Meetings, Proposals, Unmatched views.
+- Final whole-branch review by a fresh agent: see .superpowers ledger / final message.
