@@ -76,3 +76,9 @@ def test_duplicate_preview(canon):
     pv = duplicate_preview(canon["CAL-A5"], canon["CAL-A6"])
     assert pv["start"]["same"] is False and pv["owner_email"]["same"] is True
     assert set(pv) == set(CANONICAL_FIELDS)
+
+
+def test_unknown_kind_is_not_a_value(pair):
+    m = pair("CRM-1014", "CAL-A15")   # CRM Virtual, calendar has no location at all
+    assert m.fields["location_kind"].status == "single_source" and m.fields["location_kind"].value == "virtual"
+    assert m.conflict_count == 0

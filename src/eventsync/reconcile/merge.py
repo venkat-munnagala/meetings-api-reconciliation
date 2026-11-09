@@ -115,6 +115,8 @@ def _has(rec: CanonicalRecord | None, field: str) -> bool:
     if rec is None or RAW_KEYS[rec.source].get(field) is None:
         return False
     v = getattr(rec, field)
+    if field == "location_kind" and v == LocationKind.unknown:
+        return False  # unknown is the absence of information, not a value to compare
     return v is not None and v != set()
 
 

@@ -60,3 +60,10 @@ def pair(canon):
         return build_meeting(canon[c_id], canon[e_id], Match(kind="auto", level=1, confidence="high"))
 
     return _pair
+
+
+@pytest.fixture(scope="session")
+def store(settings):
+    from eventsync.store import build_store
+
+    return build_store(settings)
