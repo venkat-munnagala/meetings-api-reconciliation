@@ -67,3 +67,14 @@ def test_match_key():
     assert match_key(ev2, DEFAULT) == "+DAY-START-OWNER~CLIENT+TITLE"
     ev3 = ev.model_copy(update={"dt_minutes": None})
     assert match_key(ev3, DEFAULT) == "+DAY~START+OWNER+CLIENT"
+
+
+def test_closest_candidate_wins_regardless_of_id_order(canon, settings):
+    # CRM-0999 sorts BEFORE CRM-1001 but is 5 minutes off; CRM-1001 (dt 0) must still claim CAL-A1
+    dup = canon["CRM-1001"].model_copy(update={
+        "start": datetime(2025, 3, 10, 14, 5),
+        "raw": RawRecord(source="crm", source_id="CRM-0999", payload={})})
+    res = run_cascade(list(canon.values()) + [dup], settings)
+    claimed = [c.source_id for c, k, _ in res.auto if k.source_id == "CAL-A1"]
+    assert claimed == ["CRM-1001"]
+    assert "CRM-0999" in {r.source_id for r in res.unmatched}

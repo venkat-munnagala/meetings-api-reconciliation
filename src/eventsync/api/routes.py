@@ -1,6 +1,7 @@
 """REST routes. Thin: read the store on app.state, filter, shape."""
 from __future__ import annotations
 
+from datetime import date
 from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Query, Request
@@ -46,8 +47,8 @@ def list_meetings(
     level: int | None = None,
     owner: str | None = None,
     status: Status | None = None,
-    from_: str | None = Query(None, alias="from"),
-    to: str | None = None,
+    from_: date | None = Query(None, alias="from"),
+    to: date | None = None,
     limit: int = Query(500, ge=1, le=5000),
     offset: int = Query(0, ge=0),
 ) -> list[dict[str, Any]]:
@@ -66,9 +67,9 @@ def list_meetings(
     if status:
         ms = [m for m in ms if m.fields["status"].value == status.value]
     if from_:
-        ms = [m for m in ms if (m.fields["day"].value or "") >= from_]
+        ms = [m for m in ms if m.fields["day"].value and date.fromisoformat(m.fields["day"].value) >= from_]
     if to:
-        ms = [m for m in ms if (m.fields["day"].value or "9999") <= to]
+        ms = [m for m in ms if m.fields["day"].value and date.fromisoformat(m.fields["day"].value) <= to]
     ms.sort(key=_sort_key)
     return [_summary(m) for m in ms[offset : offset + limit]]
 

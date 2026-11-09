@@ -80,3 +80,10 @@ def test_sync_and_failure_keeps_store(client, monkeypatch):
 def test_root_serves_page(client):
     r = client.get("/")
     assert r.status_code == 200 and "<html" in r.text.lower()
+
+
+def test_date_filters_validated_and_applied(client):
+    assert client.get("/api/meetings?from=notadate").status_code == 422
+    assert client.get("/api/meetings?from=03/13/2025").status_code == 422
+    rows = client.get("/api/meetings?from=2025-03-20&to=2025-03-21").json()
+    assert {r["fields"]["day"]["value"] for r in rows} == {"2025-03-20", "2025-03-21"}

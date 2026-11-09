@@ -14,12 +14,12 @@
 - [x] Dedupe + cascade + merge (FieldViews)
 - [x] Store + API routers
 - [x] Static frontend (meetings, detail, proposals, quality, unmatched) — manually checked in browser: 28 rows, 1002 unresolved location, 4 proposals, 1003→A7
-- [x] Tests pinned to EDA trap table (74 passing)
+- [x] Tests pinned to EDA trap table (78 passing)
 - [x] README (run, approach, traps, decisions, not-built, time)
 - [x] docs/ai-collaboration index
 
 ## Review
-- [x] Verify every trap row behaves as specified (one test per row; 74 passing)
+- [x] Verify every trap row behaves as specified (one test per row; 78 passing)
 - [x] Time log (README: ~8h wall-clock, split by phase)
 
 ## Review

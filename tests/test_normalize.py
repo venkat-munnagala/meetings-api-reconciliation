@@ -82,3 +82,35 @@ def test_seconds_dropped_and_naive_treated_local(cal_raw, settings):
     c = normalise_calendar(cal_raw["CAL-A1"], settings)
     assert c.start == datetime(2025, 3, 10, 14, 0) and c.end == datetime(2025, 3, 10, 15, 30)
     assert c.start.tzinfo is None and "utc_timestamp" not in codes(c)
+
+
+def test_non_string_values_do_not_crash(settings):
+    from eventsync.models import RawRecord
+
+    rec = RawRecord(source="crm", source_id="CRM-X", payload={
+        "crm_id": "CRM-X", "subject": 7, "client_name": None, "client_company": None, "relationship_owner": "Sarah Chen",
+        "meeting_date": 20250310, "meeting_time": 1400, "meeting_type": "Internal", "location": None,
+        "notes": 5, "status": {"x": 1}, "created_at": 12345})
+    c = normalise_crm(rec, settings)
+    assert c.start is None and c.day is None and c.status is None
+    assert codes(c) >= {"malformed_date", "missing_time", "malformed_value"}
+    rec2 = RawRecord(source="calendar", source_id="CAL-X", payload={
+        "event_id": "CAL-X", "title": "t", "organizer": "sarah.chen@firma.com", "attendees": ["ok@x.com", 42, None],
+        "start_time": 1700000000, "end_time": None, "location": None, "description": None, "is_recurring": "yes",
+        "status": "confirmed", "created_at": None})
+    k = normalise_calendar(rec2, settings)
+    assert k.start is None and k.participants == {"ok@x.com", "sarah.chen@firma.com"}
+    assert "malformed_value" in codes(k)
+
+
+def test_unknown_status_vocab_is_flagged(settings):
+    from eventsync.models import RawRecord
+
+    rec = RawRecord(source="crm", source_id="CRM-Y", payload={
+        "crm_id": "CRM-Y", "subject": "s", "client_name": None, "client_company": None, "relationship_owner": "Sarah Chen",
+        "meeting_date": "2025-03-10", "meeting_time": "14:00", "meeting_type": "Internal", "location": None,
+        "notes": "n", "status": "On Hold", "created_at": "not-a-date"})
+    c = normalise_crm(rec, settings)
+    assert c.status is None and c.created_at is None
+    flagged = {(f.field, f.code) for f in c.flags}
+    assert ("status", "unknown_vocab") in flagged and ("created_at", "malformed_date") in flagged

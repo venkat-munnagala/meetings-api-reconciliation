@@ -14,6 +14,8 @@ UTC_TIMESTAMP = "utc_timestamp"
 WEEKEND = "weekend"
 NO_PARTICIPANTS = "no_participants"
 MISSING_FIELD = "missing_field"
+MALFORMED_VALUE = "malformed_value"
+UNKNOWN_VOCAB = "unknown_vocab"
 
 ALL_CODES = (
     MALFORMED_DATE,
@@ -27,6 +29,8 @@ ALL_CODES = (
     WEEKEND,
     NO_PARTICIPANTS,
     MISSING_FIELD,
+    MALFORMED_VALUE,
+    UNKNOWN_VOCAB,
 )
 
 

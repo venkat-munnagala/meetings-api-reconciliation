@@ -10,7 +10,7 @@ The brief encourages AI assistance and transparency about it. This folder indexe
 | 2. Design discussion | this README, section below | The matching rules went through three revisions in conversation before anything was written down. |
 | 3. Spec | [`docs/superpowers/specs/2026-11-09-event-sync-service-design.md`](../superpowers/specs/2026-11-09-event-sync-service-design.md) | The written design. A fresh reviewer read it as a builder would and raised four questions; all four are settled in the document and marked as calls. |
 | 4. Plan | [`docs/superpowers/plans/2026-11-09-event-sync-service.md`](../superpowers/plans/2026-11-09-event-sync-service.md) | Eleven TDD tasks with exact signatures and tests pinned to the data. |
-| 5. Build | git history, [`tasks/todo.md`](../../tasks/todo.md) | One commit per task; each task's tests were written first and watched fail. |
+| 5. Build | [`tasks/todo.md`](../../tasks/todo.md) | Eleven tasks, each checked off as its tests went from failing to passing. |
 | 6. Corrections | [`tasks/lessons.md`](../../tasks/lessons.md) | Rules written after being corrected, so the same mistake is not made twice. |
 
 ## How the design changed

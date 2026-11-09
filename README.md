@@ -20,7 +20,7 @@ Then open <http://127.0.0.1:8000/>. The API is under `/api/…` and interactive 
 uv run pytest
 ```
 
-runs the 74 tests. They use the real data files in `data/` as fixtures.
+runs the 78 tests. They use the real data files in `data/` as fixtures.
 
 ## What you will see
 
@@ -214,7 +214,7 @@ src/eventsync/
   store.py             pipeline → in-memory store, stats
   api/                 FastAPI app, routes, error shape
 web/                   index.html, app.js, styles.css (no build step)
-tests/                 74 tests; the real data files are the fixtures
+tests/                 78 tests; the real data files are the fixtures
 data/                  the two inputs
 notebooks/             EDA notebook
 docs/                  design spec, implementation plan, AI collaboration index

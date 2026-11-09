@@ -124,20 +124,22 @@ def run_cascade(records: list[CanonicalRecord], s: Settings) -> CascadeResult:
     claimed_crm: set[str] = set()
     res = CascadeResult()
 
-    # pass 1: level 1 only, per CRM record, 1:1
+    # pass 1: every level-1 pair, claimed closest-first so the best fit wins regardless of id order
+    hits: list[tuple[int, str, str, CanonicalRecord, CanonicalRecord, Evidence]] = []
     for c in crm:
-        hits: list[tuple[CanonicalRecord, Evidence]] = []
         for k in cal:
-            if k.source_id in claimed_cal or k.day != c.day:
+            if k.day != c.day:
                 continue
             ev = evidence_for(c, k, s)
             if level_for(ev, s) == 1:
-                hits.append((k, ev))
-        if hits:
-            k, ev = min(hits, key=lambda h: (h[1].dt_minutes, h[0].source_id))
-            res.auto.append((c, k, ev))
-            claimed_cal.add(k.source_id)
-            claimed_crm.add(c.source_id)
+                hits.append((ev.dt_minutes, c.source_id, k.source_id, c, k, ev))
+    for _, _, _, c, k, ev in sorted(hits, key=lambda h: h[:3]):
+        if c.source_id in claimed_crm or k.source_id in claimed_cal:
+            continue
+        res.auto.append((c, k, ev))
+        claimed_cal.add(k.source_id)
+        claimed_crm.add(c.source_id)
+    res.auto.sort(key=lambda t: t[0].source_id)
 
     # pass 2: levels 2-4, per unclaimed pair, no claiming
     for c in crm:
