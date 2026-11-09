@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.superpowers/
+notebooks/.ipynb_checkpoints/
+.DS_Store
